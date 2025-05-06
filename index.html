@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kids Video Browser</title>
+    <style>
+        @font-face {
+            font-family: 'Comic Neue';
+            src: url('assets/fonts/ComicNeueAngular-Regular.woff2') format('woff2'),
+                url('assets/fonts/ComicNeueAngular-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 18px;
+            margin: 0;
+            line-height: 1.5;
+            background: #f0f0f0;
+        }
+
+        header {
+            background: #0066cc;
+            background-image: url("assets/img/tiled2.png");
+            background-size: 150px;
+            color: white;
+            padding: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            text-shadow:
+                2px 2px 0px #000000,
+                -2px -2px 0px #0a0a0a,
+                2px -2px 0px #000000,
+                -2px 2px 0px #000000,
+                3px -3px 0px #000000,
+                -3px 3px 0px #000000;
+        }
+
+        .settings-button {
+            margin: 12px;
+            padding: 12px;
+            border: #f186ff 4px solid;
+            border-radius: 4px;
+            background-color: #b5ffb5;
+            font-family: 'Comic Neue', sans-serif;
+            color: #225151;
+            font-size: 22px;
+            font-weight: 900;
+
+        }
+
+        #category-grid,
+        #video-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            padding: 1em;
+        }
+
+        #category-grid {
+            background-color: blanchedalmond;
+        }
+
+        .card {
+            width: 150px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 0.5em;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .card-img {
+            width: 100%;
+            border-radius: 4px;
+            margin-bottom: 0.4em;
+        }
+
+        .card-title {
+            max-width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 0.9em;
+        }
+
+        .card:hover {
+            background: #e0f7ff;
+        }
+
+        #config-modal {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            min-width: 50%;
+            transform: translate(-50%, -20%);
+            background: rgb(186, 255, 184, 0.3);
+            background-image: url("assets/img/tiled.png");
+            background-size: 150px;
+            padding: 2em;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 10;
+        }
+
+        .config-content {
+            padding: 2em;
+            background: rgba(255, 255, 255);
+            border-radius: 3px;
+
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Kids Video Browser</h1>
+        <button onclick="openConfig()" class="settings-button" data-i18n="settingsButton">🔧 Einstellungen</button>
+    </header>
+    <div id="category-grid"></div>
+    <div id="video-grid"></div>
+
+    <div id="overlay" onclick="closeConfig()"></div>
+    <div id="config-modal">
+        <div class="config-content">
+
+            <h3 data-i18n="configTitle">Configure Media Folder</h3>
+            <input type="text" id="media-folder-input" style="width:100%;"><br><br>
+
+            <label for="language-select" data-i18n="languageLabel">Language:</label>
+            <select id="language-select" onchange="changeLanguage(this.value)" style="margin-bottom: 1em;">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+            </select><br><br>
+
+            <button onclick="saveConfig()" data-i18n="saveButton">Save</button>
+            <button onclick="closeConfig()" data-i18n="cancelButton">Cancel</button>
+            <h3 data-i18n="rescanTitle">Rescan Library</h3>
+            <button onclick="rescanLibrary()" data-i18n="rescanButton">Start Rescan</button>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>
