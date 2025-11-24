@@ -63,6 +63,7 @@ To make the application appear in your system menu, create a `.desktop` file.
 ## Usage
 
 -   **Browse**: Navigate through categories (folders) by clicking on them.
+-   **Filter**: When viewing videos, use the filter input at the top to search for specific videos by name.
 -   **Play**: Click on a video card to open it in VLC.
 -   **Rescan**: If you add new videos to the folder, go to Settings and click "Start Rescan" to update the library.
 

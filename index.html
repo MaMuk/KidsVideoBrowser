@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Kids Video Browser</title>
+    <link rel="stylesheet" href="node_modules/bulma/css/bulma.min.css">
     <style>
         @font-face {
             font-family: 'Comic Neue';
@@ -14,25 +16,27 @@
         }
 
         body {
-            font-family: 'Comic Neue', sans-serif;
-            font-size: 18px;
-            margin: 0;
-            line-height: 1.5;
+            font-family: 'Comic Neue', sans-serif !important;
+            font-size: 1.3em;
             background: #f0f0f0;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        header {
+        .custom-header {
             background: #0066cc;
             background-image: url("assets/img/tiled2.png");
             background-size: 150px;
             color: white;
-            padding: 1em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
-        header h1 {
+        .custom-header h1 {
             text-shadow:
                 2px 2px 0px #000000,
                 -2px -2px 0px #0a0a0a,
@@ -40,127 +44,217 @@
                 -2px 2px 0px #000000,
                 3px -3px 0px #000000,
                 -3px 3px 0px #000000;
+            color: white;
         }
 
         .settings-button {
-            margin: 12px;
-            padding: 12px;
-            border: #f186ff 4px solid;
-            border-radius: 4px;
-            background-color: #b5ffb5;
-            font-family: 'Comic Neue', sans-serif;
-            color: #225151;
-            font-size: 22px;
-            font-weight: 900;
-
-        }
-
-        #category-grid,
-        #video-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1em;
-            padding: 1em;
+            background-color: #b5ffb5 !important;
+            color: #225151 !important;
+            border-color: #48c774 !important;
+            font-family: 'Comic Neue', sans-serif !important;
         }
 
         #category-grid {
             background-color: blanchedalmond;
+            padding: 1.5rem;
+            margin: 0 !important;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
         }
 
-        .card {
+        #video-grid {
+            padding: 1.5rem;
+            margin: 0 !important;
+            background-color: #ffffff;
+            border: 2px solid #dbdbdb;
+            border-radius: 6px;
+            margin: 1rem !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            min-height: 200px;
+        }
+
+        #video-grid:empty {
+            display: none;
+        }
+
+        .media-card {
             width: 150px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 0.5em;
-            text-align: center;
+            min-height: 210px;
             cursor: pointer;
+            transition: transform 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+        }
+
+        .media-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .media-card .card-image {
+            flex-shrink: 0;
+        }
+
+        .media-card .card-image figure {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .media-card .card-image img {
+            border-radius: 4px;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-card .card-content {
+            padding: 0.5rem;
+            flex-grow: 1;
+            display: flex;
             align-items: center;
         }
 
-        .card-img {
-            width: 100%;
-            border-radius: 4px;
-            margin-bottom: 0.4em;
-        }
-
-        .card-title {
+        .media-card .card-content .title {
+            font-size: 0.9em;
             max-width: 100%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            font-size: 0.9em;
+            font-family: 'Comic Neue', sans-serif;
+            margin-bottom: 0 !important;
         }
 
-        .card:hover {
-            background: #e0f7ff;
+        .modal.is-active .modal-background {
+            background-color: rgba(0, 0, 0, 0.5);
         }
 
-        #config-modal {
-            display: none;
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            min-width: 50%;
-            transform: translate(-50%, -20%);
+        .custom-modal-card {
             background: rgb(186, 255, 184, 0.3);
             background-image: url("assets/img/tiled.png");
             background-size: 150px;
             padding: 2em;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
-            z-index: 10;
         }
 
-        .config-content {
+        .custom-modal-content {
+            background: rgba(255, 255, 255, 0.95);
             padding: 2em;
-            background: rgba(255, 255, 255);
-            border-radius: 3px;
-
+            border-radius: 6px;
         }
 
-        #overlay {
+        .button,
+        .input,
+        .select select,
+        .title,
+        .label {
+            font-family: 'Comic Neue', sans-serif !important;
+        }
+
+        #video-filter-container {
+            margin: 1rem;
+            margin-bottom: 0;
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 5;
+        }
+
+        #video-filter-container.is-visible {
+            display: block;
+        }
+
+        #video-filter-input {
+            font-size: 1.1em;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>Kids Video Browser</h1>
-        <button onclick="openConfig()" class="settings-button" data-i18n="settingsButton">🔧 Einstellungen</button>
-    </header>
-    <div id="category-grid"></div>
-    <div id="video-grid"></div>
-
-    <div id="overlay" onclick="closeConfig()"></div>
-    <div id="config-modal">
-        <div class="config-content">
-
-            <h3 data-i18n="configTitle">Configure Media Folder</h3>
-            <input type="text" id="media-folder-input" style="width:100%;"><br><br>
-
-            <label for="language-select" data-i18n="languageLabel">Language:</label>
-            <select id="language-select" onchange="changeLanguage(this.value)" style="margin-bottom: 1em;">
-                <option value="en">English</option>
-                <option value="de">Deutsch</option>
-            </select><br><br>
-
-            <button onclick="saveConfig()" data-i18n="saveButton">Save</button>
-            <button onclick="closeConfig()" data-i18n="cancelButton">Cancel</button>
-            <h3 data-i18n="rescanTitle">Rescan Library</h3>
-            <button onclick="rescanLibrary()" data-i18n="rescanButton">Start Rescan</button>
+    <!-- Header -->
+    <header class="custom-header">
+        <div class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h1 class="title is-3">Kids Video Browser</h1>
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <button onclick="openConfig()" class="button is-medium settings-button" data-i18n="settingsButton">
+                        🔧 Settings
+                    </button>
+                </div>
+            </div>
         </div>
+    </header>
+
+    <!-- Category Grid -->
+    <div id="category-grid" class="columns is-multiline is-mobile"></div>
+
+    <!-- Video Filter -->
+    <div id="video-filter-container">
+        <div class="field">
+            <div class="control">
+                <input class="input" type="text" id="video-filter-input" placeholder="🔍 Filter videos..."
+                    data-i18n-placeholder="filterPlaceholder">
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Grid -->
+    <div id="video-grid" class="columns is-multiline is-mobile"></div>
+
+    <!-- Config Modal -->
+    <div id="config-modal" class="modal">
+        <div class="modal-background" onclick="closeConfig()"></div>
+        <div class="modal-content">
+            <div class="custom-modal-card">
+                <div class="custom-modal-content">
+                    <h3 class="title is-4" data-i18n="configTitle">Configure Media Folder</h3>
+
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="text" id="media-folder-input" placeholder="Media folder path">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label" for="language-select" data-i18n="languageLabel">Language:</label>
+                        <div class="control">
+                            <div class="select">
+                                <select id="language-select" onchange="changeLanguage(this.value)">
+                                    <option value="en">English</option>
+                                    <option value="de">Deutsch</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field is-grouped">
+                        <div class="control">
+                            <button class="button is-primary" onclick="saveConfig()"
+                                data-i18n="saveButton">Save</button>
+                        </div>
+                        <div class="control">
+                            <button class="button is-light" onclick="closeConfig()"
+                                data-i18n="cancelButton">Cancel</button>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h3 class="title is-4" data-i18n="rescanTitle">Rescan Library</h3>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-info" onclick="rescanLibrary()" data-i18n="rescanButton">Start
+                                Rescan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="closeConfig()"></button>
     </div>
 
     <script src="renderer.js"></script>
